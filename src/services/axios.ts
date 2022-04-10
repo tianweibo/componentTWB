@@ -47,7 +47,7 @@ service.interceptors.request.use(
     config.headers["Content-Type"] = "application/json;charset=UTF-8";
     config.headers["Accept"] = "application/json";
     //const token = storage.get("TOKEN") || null;
-    const token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ5amZjcm0iLCJpYXQiOjE2NDk0OTU0NjcsImV4cCI6MTY0OTUwMjY2NywibmJmIjoxNjQ5NDk1NDY3LCJzdWIiOiIiLCJqdGkiOiI2NDc5ODdjNDU5NjllMWU0NzEyOGMzOTc3NzNiMTM2MCIsImFjY291bnRfaWQiOjJ9.9W8xFdS8nyg-Ih0_4LclYoxno7uznRhZN5LTX_apr6Q';
+    const token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ5amZjcm0iLCJpYXQiOjE2NDk1OTIxMjIsImV4cCI6MTY0OTU5OTMyMiwibmJmIjoxNjQ5NTkyMTIyLCJzdWIiOiIiLCJqdGkiOiI1MTNjODYxOGMyMjEyYThkMjhiYjk5ODI4Y2E0Y2VlNiIsImFjY291bnRfaWQiOjJ9.FCzYcj5ZqBaZtnUQ-c6nSjddYU1aqA2xwsO9Ee23jsY';
     if (token) {
       // 如果token不为null，否则传token给后台
       config.headers["authorization"] = token;

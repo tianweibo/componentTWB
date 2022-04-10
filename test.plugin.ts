@@ -1,4 +1,4 @@
-import {App} from 'vue';
+import {App} from 'Vue';
 //import HelloWorld from "./components/HelloWorld.vue"
 const plugins={
     install:(app: App)=>{

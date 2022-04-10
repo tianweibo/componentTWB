@@ -1,7 +1,7 @@
 <template>
   <a-modal
-    v-model:visible.sync="dialogTableVisible"
-    title="选择礼品1"
+    v-model="dialogTableVisible"
+    title="选择礼P"
     width="70%"
     @cancel="closeDialog"
     footer=null
@@ -10,7 +10,7 @@
       <a-form :model="formState" name="exhangeSearch" layout="inline" autocomplete="off" ref="form">
         <a-form-item label="礼品类型" name="typeName">
           <a-select
-            v-model:value="formState.typeName"
+            v-model="formState.typeName"
             style="width: 180px"
             allowClear
           >
@@ -21,7 +21,7 @@
         </a-form-item>
         <a-form-item label="礼品名称" name="name">
           <a-input
-            v-model:value="formState.name"
+            v-model="formState.name"
             :maxlength="15"
             placeholder="请输入礼品名称"
           ></a-input>

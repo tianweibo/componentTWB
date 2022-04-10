@@ -1,7 +1,7 @@
 import { defineComponent, resolveComponent, openBlock, createElementBlock, createVNode, withCtx, createTextVNode, pushScopeId, popScopeId, createElementVNode, isVNode, Fragment, Comment, Text, nextTick, TransitionGroup as TransitionGroup$1, getCurrentInstance, onUpdated, h as h$1, createApp, ref, reactive, onMounted, createBlock, renderList, toDisplayString, createCommentVNode } from 'vue';
 import require$$1 from 'http';
 import require$$2 from 'https';
-import require$$0 from 'url';
+import require$$0$1 from 'url';
 import require$$3 from 'stream';
 import require$$4 from 'assert';
 import require$$8 from 'zlib';
@@ -49,7 +49,7 @@ var script$2 = defineComponent({
 });
 
 const _hoisted_1$2 = { class: "hello" };
-const _hoisted_2$2 = /*#__PURE__*/createElementVNode("h1", null, "我是图片组件2", -1 /* HOISTED */);
+const _hoisted_2$2 = /*#__PURE__*/createElementVNode("h1", null, "我是图片组件2-test", -1 /* HOISTED */);
 const _hoisted_3$2 = [
   _hoisted_2$2
 ];
@@ -65,7 +65,7 @@ script$2.install = (app) => {
     app.component(script$2.name, script$2);
 };
 
-var axios$1 = {exports: {}};
+var axios$2 = {exports: {}};
 
 var bind$2 = function bind(fn, thisArg) {
   return function wrap() {
@@ -78,8 +78,6 @@ var bind$2 = function bind(fn, thisArg) {
 };
 
 var bind$1 = bind$2;
-
-/*global toString:true*/
 
 // utils is a library of generic helper functions non-specific to axios
 
@@ -264,7 +262,7 @@ function isURLSearchParams(val) {
  * @returns {String} The String freed of excess whitespace
  */
 function trim(str) {
-  return str.replace(/^\s*/, '').replace(/\s*$/, '');
+  return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g, '');
 }
 
 /**
@@ -510,10 +508,12 @@ function InterceptorManager$1() {
  *
  * @return {Number} An ID used to remove interceptor later
  */
-InterceptorManager$1.prototype.use = function use(fulfilled, rejected) {
+InterceptorManager$1.prototype.use = function use(fulfilled, rejected, options) {
   this.handlers.push({
     fulfilled: fulfilled,
-    rejected: rejected
+    rejected: rejected,
+    synchronous: options ? options.synchronous : false,
+    runWhen: options ? options.runWhen : null
   });
   return this.handlers.length - 1;
 };
@@ -549,31 +549,8 @@ var InterceptorManager_1 = InterceptorManager$1;
 
 var utils$e = utils$h;
 
-/**
- * Transform the data for a request or a response
- *
- * @param {Object|String} data The data to be transformed
- * @param {Array} headers The headers for the request or response
- * @param {Array|Function} fns A single function or Array of functions
- * @returns {*} The resulting transformed data
- */
-var transformData$1 = function transformData(data, headers, fns) {
-  /*eslint no-param-reassign:0*/
-  utils$e.forEach(fns, function transform(fn) {
-    data = fn(data, headers);
-  });
-
-  return data;
-};
-
-var isCancel$1 = function isCancel(value) {
-  return !!(value && value.__CANCEL__);
-};
-
-var utils$d = utils$h;
-
 var normalizeHeaderName$1 = function normalizeHeaderName(headers, normalizedName) {
-  utils$d.forEach(headers, function processHeader(value, name) {
+  utils$e.forEach(headers, function processHeader(value, name) {
     if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
       headers[normalizedName] = value;
       delete headers[name];
@@ -591,7 +568,7 @@ var normalizeHeaderName$1 = function normalizeHeaderName(headers, normalizedName
  * @param {Object} [response] The response.
  * @returns {Error} The error.
  */
-var enhanceError$2 = function enhanceError(error, config, code, request, response) {
+var enhanceError$3 = function enhanceError(error, config, code, request, response) {
   error.config = config;
   if (code) {
     error.code = code;
@@ -622,7 +599,7 @@ var enhanceError$2 = function enhanceError(error, config, code, request, respons
   return error;
 };
 
-var enhanceError$1 = enhanceError$2;
+var enhanceError$2 = enhanceError$3;
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -636,7 +613,7 @@ var enhanceError$1 = enhanceError$2;
  */
 var createError$3 = function createError(message, config, code, request, response) {
   var error = new Error(message);
-  return enhanceError$1(error, config, code, request, response);
+  return enhanceError$2(error, config, code, request, response);
 };
 
 var createError$2 = createError$3;
@@ -663,10 +640,10 @@ var settle$2 = function settle(resolve, reject, response) {
   }
 };
 
-var utils$c = utils$h;
+var utils$d = utils$h;
 
 var cookies$1 = (
-  utils$c.isStandardBrowserEnv() ?
+  utils$d.isStandardBrowserEnv() ?
 
   // Standard browser envs support document.cookie
     (function standardBrowserEnv() {
@@ -675,15 +652,15 @@ var cookies$1 = (
           var cookie = [];
           cookie.push(name + '=' + encodeURIComponent(value));
 
-          if (utils$c.isNumber(expires)) {
+          if (utils$d.isNumber(expires)) {
             cookie.push('expires=' + new Date(expires).toGMTString());
           }
 
-          if (utils$c.isString(path)) {
+          if (utils$d.isString(path)) {
             cookie.push('path=' + path);
           }
 
-          if (utils$c.isString(domain)) {
+          if (utils$d.isString(domain)) {
             cookie.push('domain=' + domain);
           }
 
@@ -760,7 +737,7 @@ var buildFullPath$2 = function buildFullPath(baseURL, requestedURL) {
   return requestedURL;
 };
 
-var utils$b = utils$h;
+var utils$c = utils$h;
 
 // Headers whose duplicates are ignored by node
 // c.f. https://nodejs.org/api/http.html#http_message_headers
@@ -792,10 +769,10 @@ var parseHeaders$1 = function parseHeaders(headers) {
 
   if (!headers) { return parsed; }
 
-  utils$b.forEach(headers.split('\n'), function parser(line) {
+  utils$c.forEach(headers.split('\n'), function parser(line) {
     i = line.indexOf(':');
-    key = utils$b.trim(line.substr(0, i)).toLowerCase();
-    val = utils$b.trim(line.substr(i + 1));
+    key = utils$c.trim(line.substr(0, i)).toLowerCase();
+    val = utils$c.trim(line.substr(i + 1));
 
     if (key) {
       if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
@@ -812,10 +789,10 @@ var parseHeaders$1 = function parseHeaders(headers) {
   return parsed;
 };
 
-var utils$a = utils$h;
+var utils$b = utils$h;
 
 var isURLSameOrigin$1 = (
-  utils$a.isStandardBrowserEnv() ?
+  utils$b.isStandardBrowserEnv() ?
 
   // Standard browser envs have full support of the APIs needed to test
   // whether the request URL is of the same origin as current location.
@@ -865,7 +842,7 @@ var isURLSameOrigin$1 = (
     * @returns {boolean} True if URL shares the same origin, otherwise false
     */
       return function isURLSameOrigin(requestURL) {
-        var parsed = (utils$a.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
+        var parsed = (utils$b.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
         return (parsed.protocol === originURL.protocol &&
             parsed.host === originURL.host);
       };
@@ -879,7 +856,7 @@ var isURLSameOrigin$1 = (
     })()
 );
 
-var utils$9 = utils$h;
+var utils$a = utils$h;
 var settle$1 = settle$2;
 var cookies = cookies$1;
 var buildURL$2 = buildURL$3;
@@ -892,8 +869,9 @@ var xhr = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
     var requestData = config.data;
     var requestHeaders = config.headers;
+    var responseType = config.responseType;
 
-    if (utils$9.isFormData(requestData)) {
+    if (utils$a.isFormData(requestData)) {
       delete requestHeaders['Content-Type']; // Let the browser set it
     }
 
@@ -912,23 +890,14 @@ var xhr = function xhrAdapter(config) {
     // Set the request timeout in MS
     request.timeout = config.timeout;
 
-    // Listen for ready state
-    request.onreadystatechange = function handleLoad() {
-      if (!request || request.readyState !== 4) {
+    function onloadend() {
+      if (!request) {
         return;
       }
-
-      // The request errored out and we didn't get a response, this will be
-      // handled by onerror instead
-      // With one exception: request that using file: protocol, most browsers
-      // will return status as 0 even though it's a successful request
-      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
-        return;
-      }
-
       // Prepare the response
       var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
-      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+      var responseData = !responseType || responseType === 'text' ||  responseType === 'json' ?
+        request.responseText : request.response;
       var response = {
         data: responseData,
         status: request.status,
@@ -942,7 +911,30 @@ var xhr = function xhrAdapter(config) {
 
       // Clean up request
       request = null;
-    };
+    }
+
+    if ('onloadend' in request) {
+      // Use onloadend if available
+      request.onloadend = onloadend;
+    } else {
+      // Listen for ready state to emulate onloadend
+      request.onreadystatechange = function handleLoad() {
+        if (!request || request.readyState !== 4) {
+          return;
+        }
+
+        // The request errored out and we didn't get a response, this will be
+        // handled by onerror instead
+        // With one exception: request that using file: protocol, most browsers
+        // will return status as 0 even though it's a successful request
+        if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+          return;
+        }
+        // readystate handler is calling before onerror or ontimeout handlers,
+        // so we should call onloadend on the next 'tick'
+        setTimeout(onloadend);
+      };
+    }
 
     // Handle browser request cancellation (as opposed to a manual cancellation)
     request.onabort = function handleAbort() {
@@ -972,7 +964,10 @@ var xhr = function xhrAdapter(config) {
       if (config.timeoutErrorMessage) {
         timeoutErrorMessage = config.timeoutErrorMessage;
       }
-      reject(createError$1(timeoutErrorMessage, config, 'ECONNABORTED',
+      reject(createError$1(
+        timeoutErrorMessage,
+        config,
+        config.transitional && config.transitional.clarifyTimeoutError ? 'ETIMEDOUT' : 'ECONNABORTED',
         request));
 
       // Clean up request
@@ -982,7 +977,7 @@ var xhr = function xhrAdapter(config) {
     // Add xsrf header
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
-    if (utils$9.isStandardBrowserEnv()) {
+    if (utils$a.isStandardBrowserEnv()) {
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(fullPath)) && config.xsrfCookieName ?
         cookies.read(config.xsrfCookieName) :
@@ -995,7 +990,7 @@ var xhr = function xhrAdapter(config) {
 
     // Add headers to the request
     if ('setRequestHeader' in request) {
-      utils$9.forEach(requestHeaders, function setRequestHeader(val, key) {
+      utils$a.forEach(requestHeaders, function setRequestHeader(val, key) {
         if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
           // Remove Content-Type if data is undefined
           delete requestHeaders[key];
@@ -1007,21 +1002,13 @@ var xhr = function xhrAdapter(config) {
     }
 
     // Add withCredentials to request if needed
-    if (!utils$9.isUndefined(config.withCredentials)) {
+    if (!utils$a.isUndefined(config.withCredentials)) {
       request.withCredentials = !!config.withCredentials;
     }
 
     // Add responseType to request if needed
-    if (config.responseType) {
-      try {
-        request.responseType = config.responseType;
-      } catch (e) {
-        // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.
-        // But, this can be suppressed for 'json' type as it can be parsed by default 'transformResponse' function.
-        if (config.responseType !== 'json') {
-          throw e;
-        }
-      }
+    if (responseType && responseType !== 'json') {
+      request.responseType = config.responseType;
     }
 
     // Handle progress if needed
@@ -1057,7 +1044,7 @@ var xhr = function xhrAdapter(config) {
   });
 };
 
-var _followRedirects_1_14_9_followRedirects = {exports: {}};
+var followRedirects = {exports: {}};
 
 var debug$1;
 
@@ -1075,7 +1062,7 @@ var debug_1 = function () {
   debug$1.apply(null, arguments);
 };
 
-var url$1 = require$$0;
+var url$1 = require$$0$1;
 var URL = url$1.URL;
 var http$1 = require$$1;
 var https$1 = require$$2;
@@ -1647,28 +1634,91 @@ function isSubdomain(subdomain, domain) {
 }
 
 // Exports
-_followRedirects_1_14_9_followRedirects.exports = wrap({ http: http$1, https: https$1 });
-_followRedirects_1_14_9_followRedirects.exports.wrap = wrap;
+followRedirects.exports = wrap({ http: http$1, https: https$1 });
+followRedirects.exports.wrap = wrap;
 
-var name = "axios";
-var version = "0.21.1";
+var _from = "axios@^0.21.1";
+var _id = "axios@0.21.4";
+var _inBundle = false;
+var _integrity = "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==";
+var _location = "/axios";
+var _phantomChildren = {
+};
+var _requested = {
+	type: "range",
+	registry: true,
+	raw: "axios@^0.21.1",
+	name: "axios",
+	escapedName: "axios",
+	rawSpec: "^0.21.1",
+	saveSpec: null,
+	fetchSpec: "^0.21.1"
+};
+var _requiredBy = [
+	"#DEV:/"
+];
+var _resolved = "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz";
+var _shasum = "c67b90dc0568e5c1cf2b0b858c43ba28e2eda575";
+var _spec = "axios@^0.21.1";
+var _where = "/Users/tianwb/Desktop/前端/componentTWB";
+var author = {
+	name: "Matt Zabriskie"
+};
+var browser = {
+	"./lib/adapters/http.js": "./lib/adapters/xhr.js"
+};
+var bugs = {
+	url: "https://github.com/axios/axios/issues"
+};
+var bundleDependencies = false;
+var bundlesize = [
+	{
+		path: "./dist/axios.min.js",
+		threshold: "5kB"
+	}
+];
+var dependencies = {
+	"follow-redirects": "^1.14.0"
+};
+var deprecated = false;
 var description = "Promise based HTTP client for the browser and node.js";
-var main = "index.js";
-var scripts = {
-	test: "grunt test && bundlesize",
-	start: "node ./sandbox/server.js",
-	build: "NODE_ENV=production grunt build",
-	preversion: "npm test",
-	version: "npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json",
-	postversion: "git push && git push --tags",
-	examples: "node ./examples/server.js",
-	coveralls: "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
-	fix: "eslint --fix lib/**/*.js"
+var devDependencies = {
+	coveralls: "^3.0.0",
+	"es6-promise": "^4.2.4",
+	grunt: "^1.3.0",
+	"grunt-banner": "^0.6.0",
+	"grunt-cli": "^1.2.0",
+	"grunt-contrib-clean": "^1.1.0",
+	"grunt-contrib-watch": "^1.0.0",
+	"grunt-eslint": "^23.0.0",
+	"grunt-karma": "^4.0.0",
+	"grunt-mocha-test": "^0.13.3",
+	"grunt-ts": "^6.0.0-beta.19",
+	"grunt-webpack": "^4.0.2",
+	"istanbul-instrumenter-loader": "^1.0.0",
+	"jasmine-core": "^2.4.1",
+	karma: "^6.3.2",
+	"karma-chrome-launcher": "^3.1.0",
+	"karma-firefox-launcher": "^2.1.0",
+	"karma-jasmine": "^1.1.1",
+	"karma-jasmine-ajax": "^0.1.13",
+	"karma-safari-launcher": "^1.0.0",
+	"karma-sauce-launcher": "^4.3.6",
+	"karma-sinon": "^1.0.5",
+	"karma-sourcemap-loader": "^0.3.8",
+	"karma-webpack": "^4.0.2",
+	"load-grunt-tasks": "^3.5.2",
+	minimist: "^1.2.0",
+	mocha: "^8.2.1",
+	sinon: "^4.5.0",
+	"terser-webpack-plugin": "^4.2.3",
+	typescript: "^4.0.5",
+	"url-search-params": "^0.10.0",
+	webpack: "^4.44.2",
+	"webpack-dev-server": "^3.11.0"
 };
-var repository = {
-	type: "git",
-	url: "https://github.com/axios/axios.git"
-};
+var homepage = "https://axios-http.com";
+var jsdelivr = "dist/axios.min.js";
 var keywords = [
 	"xhr",
 	"http",
@@ -1676,104 +1726,75 @@ var keywords = [
 	"promise",
 	"node"
 ];
-var author = "Matt Zabriskie";
 var license = "MIT";
-var bugs = {
-	url: "https://github.com/axios/axios/issues"
+var main = "index.js";
+var name = "axios";
+var repository = {
+	type: "git",
+	url: "git+https://github.com/axios/axios.git"
 };
-var homepage = "https://github.com/axios/axios";
-var devDependencies = {
-	bundlesize: "^0.17.0",
-	coveralls: "^3.0.0",
-	"es6-promise": "^4.2.4",
-	grunt: "^1.0.2",
-	"grunt-banner": "^0.6.0",
-	"grunt-cli": "^1.2.0",
-	"grunt-contrib-clean": "^1.1.0",
-	"grunt-contrib-watch": "^1.0.0",
-	"grunt-eslint": "^20.1.0",
-	"grunt-karma": "^2.0.0",
-	"grunt-mocha-test": "^0.13.3",
-	"grunt-ts": "^6.0.0-beta.19",
-	"grunt-webpack": "^1.0.18",
-	"istanbul-instrumenter-loader": "^1.0.0",
-	"jasmine-core": "^2.4.1",
-	karma: "^1.3.0",
-	"karma-chrome-launcher": "^2.2.0",
-	"karma-coverage": "^1.1.1",
-	"karma-firefox-launcher": "^1.1.0",
-	"karma-jasmine": "^1.1.1",
-	"karma-jasmine-ajax": "^0.1.13",
-	"karma-opera-launcher": "^1.0.0",
-	"karma-safari-launcher": "^1.0.0",
-	"karma-sauce-launcher": "^1.2.0",
-	"karma-sinon": "^1.0.5",
-	"karma-sourcemap-loader": "^0.3.7",
-	"karma-webpack": "^1.7.0",
-	"load-grunt-tasks": "^3.5.2",
-	minimist: "^1.2.0",
-	mocha: "^5.2.0",
-	sinon: "^4.5.0",
-	typescript: "^2.8.1",
-	"url-search-params": "^0.10.0",
-	webpack: "^1.13.1",
-	"webpack-dev-server": "^1.14.1"
+var scripts = {
+	build: "NODE_ENV=production grunt build",
+	coveralls: "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+	examples: "node ./examples/server.js",
+	fix: "eslint --fix lib/**/*.js",
+	postversion: "git push && git push --tags",
+	preversion: "npm test",
+	start: "node ./sandbox/server.js",
+	test: "grunt test",
+	version: "npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"
 };
-var browser = {
-	"./lib/adapters/http.js": "./lib/adapters/xhr.js"
-};
-var jsdelivr = "dist/axios.min.js";
-var unpkg = "dist/axios.min.js";
 var typings = "./index.d.ts";
-var dependencies = {
-	"follow-redirects": "^1.10.0"
-};
-var bundlesize = [
-	{
-		path: "./dist/axios.min.js",
-		threshold: "5kB"
-	}
-];
-var __npminstall_done = "Sat Apr 09 2022 00:03:34 GMT+0800 (GMT+08:00)";
-var _from = "axios@0.21.1";
-var _resolved = "https://registry.npmmirror.com/axios/-/axios-0.21.1.tgz";
-var require$$9 = {
-	name: name,
-	version: version,
-	description: description,
-	main: main,
-	scripts: scripts,
-	repository: repository,
-	keywords: keywords,
-	author: author,
-	license: license,
-	bugs: bugs,
-	homepage: homepage,
-	devDependencies: devDependencies,
-	browser: browser,
-	jsdelivr: jsdelivr,
-	unpkg: unpkg,
-	typings: typings,
-	dependencies: dependencies,
-	bundlesize: bundlesize,
-	__npminstall_done: __npminstall_done,
+var unpkg = "dist/axios.min.js";
+var version = "0.21.4";
+var require$$0 = {
 	_from: _from,
-	_resolved: _resolved
+	_id: _id,
+	_inBundle: _inBundle,
+	_integrity: _integrity,
+	_location: _location,
+	_phantomChildren: _phantomChildren,
+	_requested: _requested,
+	_requiredBy: _requiredBy,
+	_resolved: _resolved,
+	_shasum: _shasum,
+	_spec: _spec,
+	_where: _where,
+	author: author,
+	browser: browser,
+	bugs: bugs,
+	bundleDependencies: bundleDependencies,
+	bundlesize: bundlesize,
+	dependencies: dependencies,
+	deprecated: deprecated,
+	description: description,
+	devDependencies: devDependencies,
+	homepage: homepage,
+	jsdelivr: jsdelivr,
+	keywords: keywords,
+	license: license,
+	main: main,
+	name: name,
+	repository: repository,
+	scripts: scripts,
+	typings: typings,
+	unpkg: unpkg,
+	version: version
 };
 
-var utils$8 = utils$h;
+var utils$9 = utils$h;
 var settle = settle$2;
 var buildFullPath = buildFullPath$2;
 var buildURL$1 = buildURL$3;
 var http = require$$1;
 var https = require$$2;
-var httpFollow = _followRedirects_1_14_9_followRedirects.exports.http;
-var httpsFollow = _followRedirects_1_14_9_followRedirects.exports.https;
-var url = require$$0;
+var httpFollow = followRedirects.exports.http;
+var httpsFollow = followRedirects.exports.https;
+var url = require$$0$1;
 var zlib = require$$8;
-var pkg = require$$9;
+var pkg$1 = require$$0;
 var createError = createError$3;
-var enhanceError = enhanceError$2;
+var enhanceError$1 = enhanceError$3;
 
 var isHttps = /https:?/;
 
@@ -1815,16 +1836,23 @@ var http_1 = function httpAdapter(config) {
     var headers = config.headers;
 
     // Set User-Agent (required by some servers)
-    // Only set header if it hasn't been set in config
     // See https://github.com/axios/axios/issues/69
-    if (!headers['User-Agent'] && !headers['user-agent']) {
-      headers['User-Agent'] = 'axios/' + pkg.version;
+    if ('User-Agent' in headers || 'user-agent' in headers) {
+      // User-Agent is specified; handle case where no UA header is desired
+      if (!headers['User-Agent'] && !headers['user-agent']) {
+        delete headers['User-Agent'];
+        delete headers['user-agent'];
+      }
+      // Otherwise, use specified value
+    } else {
+      // Only set header if it hasn't been set in config
+      headers['User-Agent'] = 'axios/' + pkg$1.version;
     }
 
-    if (data && !utils$8.isStream(data)) {
-      if (Buffer.isBuffer(data)) ; else if (utils$8.isArrayBuffer(data)) {
+    if (data && !utils$9.isStream(data)) {
+      if (Buffer.isBuffer(data)) ; else if (utils$9.isArrayBuffer(data)) {
         data = Buffer.from(new Uint8Array(data));
-      } else if (utils$8.isString(data)) {
+      } else if (utils$9.isString(data)) {
         data = Buffer.from(data, 'utf-8');
       } else {
         return reject(createError(
@@ -1990,11 +2018,13 @@ var http_1 = function httpAdapter(config) {
         settle(resolve, reject, response);
       } else {
         var responseBuffer = [];
+        var totalResponseBytes = 0;
         stream.on('data', function handleStreamData(chunk) {
           responseBuffer.push(chunk);
+          totalResponseBytes += chunk.length;
 
           // make sure the content length is not over the maxContentLength if specified
-          if (config.maxContentLength > -1 && Buffer.concat(responseBuffer).length > config.maxContentLength) {
+          if (config.maxContentLength > -1 && totalResponseBytes > config.maxContentLength) {
             stream.destroy();
             reject(createError('maxContentLength size of ' + config.maxContentLength + ' exceeded',
               config, null, lastRequest));
@@ -2003,7 +2033,7 @@ var http_1 = function httpAdapter(config) {
 
         stream.on('error', function handleStreamError(err) {
           if (req.aborted) return;
-          reject(enhanceError(err, config, null, lastRequest));
+          reject(enhanceError$1(err, config, null, lastRequest));
         });
 
         stream.on('end', function handleStreamEnd() {
@@ -2011,7 +2041,7 @@ var http_1 = function httpAdapter(config) {
           if (config.responseType !== 'arraybuffer') {
             responseData = responseData.toString(config.responseEncoding);
             if (!config.responseEncoding || config.responseEncoding === 'utf8') {
-              responseData = utils$8.stripBOM(responseData);
+              responseData = utils$9.stripBOM(responseData);
             }
           }
 
@@ -2024,19 +2054,38 @@ var http_1 = function httpAdapter(config) {
     // Handle errors
     req.on('error', function handleRequestError(err) {
       if (req.aborted && err.code !== 'ERR_FR_TOO_MANY_REDIRECTS') return;
-      reject(enhanceError(err, config, null, req));
+      reject(enhanceError$1(err, config, null, req));
     });
 
     // Handle request timeout
     if (config.timeout) {
+      // This is forcing a int timeout to avoid problems if the `req` interface doesn't handle other types.
+      var timeout = parseInt(config.timeout, 10);
+
+      if (isNaN(timeout)) {
+        reject(createError(
+          'error trying to parse `config.timeout` to int',
+          config,
+          'ERR_PARSE_TIMEOUT',
+          req
+        ));
+
+        return;
+      }
+
       // Sometime, the response will be very slow, and does not respond, the connect event will be block by event loop system.
       // And timer callback will be fired, and abort() will be invoked before connection, then get "socket hang up" and code ECONNRESET.
       // At this time, if we have a large number of request, nodejs will hang up some socket on background. and the number will up and up.
       // And then these socket which be hang up will devoring CPU little by little.
       // ClientRequest.setTimeout will be fired on the specify milliseconds, and can make sure that abort() will be fired after connect.
-      req.setTimeout(config.timeout, function handleRequestTimeout() {
+      req.setTimeout(timeout, function handleRequestTimeout() {
         req.abort();
-        reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED', req));
+        reject(createError(
+          'timeout of ' + timeout + 'ms exceeded',
+          config,
+          config.transitional && config.transitional.clarifyTimeoutError ? 'ETIMEDOUT' : 'ECONNABORTED',
+          req
+        ));
       });
     }
 
@@ -2051,9 +2100,9 @@ var http_1 = function httpAdapter(config) {
     }
 
     // Send the request
-    if (utils$8.isStream(data)) {
+    if (utils$9.isStream(data)) {
       data.on('error', function handleStreamError(err) {
-        reject(enhanceError(err, config, null, req));
+        reject(enhanceError$1(err, config, null, req));
       }).pipe(req);
     } else {
       req.end(data);
@@ -2061,15 +2110,16 @@ var http_1 = function httpAdapter(config) {
   });
 };
 
-var utils$7 = utils$h;
+var utils$8 = utils$h;
 var normalizeHeaderName = normalizeHeaderName$1;
+var enhanceError = enhanceError$3;
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
 };
 
 function setContentTypeIfUnset(headers, value) {
-  if (!utils$7.isUndefined(headers) && utils$7.isUndefined(headers['Content-Type'])) {
+  if (!utils$8.isUndefined(headers) && utils$8.isUndefined(headers['Content-Type'])) {
     headers['Content-Type'] = value;
   }
 }
@@ -2086,42 +2136,77 @@ function getDefaultAdapter() {
   return adapter;
 }
 
-var defaults$4 = {
+function stringifySafely(rawValue, parser, encoder) {
+  if (utils$8.isString(rawValue)) {
+    try {
+      (parser || JSON.parse)(rawValue);
+      return utils$8.trim(rawValue);
+    } catch (e) {
+      if (e.name !== 'SyntaxError') {
+        throw e;
+      }
+    }
+  }
+
+  return (encoder || JSON.stringify)(rawValue);
+}
+
+var defaults$5 = {
+
+  transitional: {
+    silentJSONParsing: true,
+    forcedJSONParsing: true,
+    clarifyTimeoutError: false
+  },
+
   adapter: getDefaultAdapter(),
 
   transformRequest: [function transformRequest(data, headers) {
     normalizeHeaderName(headers, 'Accept');
     normalizeHeaderName(headers, 'Content-Type');
-    if (utils$7.isFormData(data) ||
-      utils$7.isArrayBuffer(data) ||
-      utils$7.isBuffer(data) ||
-      utils$7.isStream(data) ||
-      utils$7.isFile(data) ||
-      utils$7.isBlob(data)
+
+    if (utils$8.isFormData(data) ||
+      utils$8.isArrayBuffer(data) ||
+      utils$8.isBuffer(data) ||
+      utils$8.isStream(data) ||
+      utils$8.isFile(data) ||
+      utils$8.isBlob(data)
     ) {
       return data;
     }
-    if (utils$7.isArrayBufferView(data)) {
+    if (utils$8.isArrayBufferView(data)) {
       return data.buffer;
     }
-    if (utils$7.isURLSearchParams(data)) {
+    if (utils$8.isURLSearchParams(data)) {
       setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
       return data.toString();
     }
-    if (utils$7.isObject(data)) {
-      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
-      return JSON.stringify(data);
+    if (utils$8.isObject(data) || (headers && headers['Content-Type'] === 'application/json')) {
+      setContentTypeIfUnset(headers, 'application/json');
+      return stringifySafely(data);
     }
     return data;
   }],
 
   transformResponse: [function transformResponse(data) {
-    /*eslint no-param-reassign:0*/
-    if (typeof data === 'string') {
+    var transitional = this.transitional;
+    var silentJSONParsing = transitional && transitional.silentJSONParsing;
+    var forcedJSONParsing = transitional && transitional.forcedJSONParsing;
+    var strictJSONParsing = !silentJSONParsing && this.responseType === 'json';
+
+    if (strictJSONParsing || (forcedJSONParsing && utils$8.isString(data) && data.length)) {
       try {
-        data = JSON.parse(data);
-      } catch (e) { /* Ignore */ }
+        return JSON.parse(data);
+      } catch (e) {
+        if (strictJSONParsing) {
+          if (e.name === 'SyntaxError') {
+            throw enhanceError(e, this, 'E_JSON_PARSE');
+          }
+          throw e;
+        }
+      }
     }
+
     return data;
   }],
 
@@ -2142,21 +2227,46 @@ var defaults$4 = {
   }
 };
 
-defaults$4.headers = {
+defaults$5.headers = {
   common: {
     'Accept': 'application/json, text/plain, */*'
   }
 };
 
-utils$7.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
-  defaults$4.headers[method] = {};
+utils$8.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  defaults$5.headers[method] = {};
 });
 
-utils$7.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  defaults$4.headers[method] = utils$7.merge(DEFAULT_CONTENT_TYPE);
+utils$8.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults$5.headers[method] = utils$8.merge(DEFAULT_CONTENT_TYPE);
 });
 
-var defaults_1 = defaults$4;
+var defaults_1 = defaults$5;
+
+var utils$7 = utils$h;
+var defaults$4 = defaults_1;
+
+/**
+ * Transform the data for a request or a response
+ *
+ * @param {Object|String} data The data to be transformed
+ * @param {Array} headers The headers for the request or response
+ * @param {Array|Function} fns A single function or Array of functions
+ * @returns {*} The resulting transformed data
+ */
+var transformData$1 = function transformData(data, headers, fns) {
+  var context = this || defaults$4;
+  /*eslint no-param-reassign:0*/
+  utils$7.forEach(fns, function transform(fn) {
+    data = fn.call(context, data, headers);
+  });
+
+  return data;
+};
+
+var isCancel$1 = function isCancel(value) {
+  return !!(value && value.__CANCEL__);
+};
 
 var utils$6 = utils$h;
 var transformData = transformData$1;
@@ -2185,7 +2295,8 @@ var dispatchRequest$1 = function dispatchRequest(config) {
   config.headers = config.headers || {};
 
   // Transform request data
-  config.data = transformData(
+  config.data = transformData.call(
+    config,
     config.data,
     config.headers,
     config.transformRequest
@@ -2211,7 +2322,8 @@ var dispatchRequest$1 = function dispatchRequest(config) {
     throwIfCancellationRequested(config);
 
     // Transform response data
-    response.data = transformData(
+    response.data = transformData.call(
+      config,
       response.data,
       response.headers,
       config.transformResponse
@@ -2224,7 +2336,8 @@ var dispatchRequest$1 = function dispatchRequest(config) {
 
       // Transform response data
       if (reason && reason.response) {
-        reason.response.data = transformData(
+        reason.response.data = transformData.call(
+          config,
           reason.response.data,
           reason.response.headers,
           config.transformResponse
@@ -2322,12 +2435,118 @@ var mergeConfig$2 = function mergeConfig(config1, config2) {
   return config;
 };
 
+var pkg = require$$0;
+
+var validators$1 = {};
+
+// eslint-disable-next-line func-names
+['object', 'boolean', 'number', 'function', 'string', 'symbol'].forEach(function(type, i) {
+  validators$1[type] = function validator(thing) {
+    return typeof thing === type || 'a' + (i < 1 ? 'n ' : ' ') + type;
+  };
+});
+
+var deprecatedWarnings = {};
+var currentVerArr = pkg.version.split('.');
+
+/**
+ * Compare package versions
+ * @param {string} version
+ * @param {string?} thanVersion
+ * @returns {boolean}
+ */
+function isOlderVersion(version, thanVersion) {
+  var pkgVersionArr = thanVersion ? thanVersion.split('.') : currentVerArr;
+  var destVer = version.split('.');
+  for (var i = 0; i < 3; i++) {
+    if (pkgVersionArr[i] > destVer[i]) {
+      return true;
+    } else if (pkgVersionArr[i] < destVer[i]) {
+      return false;
+    }
+  }
+  return false;
+}
+
+/**
+ * Transitional option validator
+ * @param {function|boolean?} validator
+ * @param {string?} version
+ * @param {string} message
+ * @returns {function}
+ */
+validators$1.transitional = function transitional(validator, version, message) {
+  var isDeprecated = version && isOlderVersion(version);
+
+  function formatMessage(opt, desc) {
+    return '[Axios v' + pkg.version + '] Transitional option \'' + opt + '\'' + desc + (message ? '. ' + message : '');
+  }
+
+  // eslint-disable-next-line func-names
+  return function(value, opt, opts) {
+    if (validator === false) {
+      throw new Error(formatMessage(opt, ' has been removed in ' + version));
+    }
+
+    if (isDeprecated && !deprecatedWarnings[opt]) {
+      deprecatedWarnings[opt] = true;
+      // eslint-disable-next-line no-console
+      console.warn(
+        formatMessage(
+          opt,
+          ' has been deprecated since v' + version + ' and will be removed in the near future'
+        )
+      );
+    }
+
+    return validator ? validator(value, opt, opts) : true;
+  };
+};
+
+/**
+ * Assert object's properties type
+ * @param {object} options
+ * @param {object} schema
+ * @param {boolean?} allowUnknown
+ */
+
+function assertOptions(options, schema, allowUnknown) {
+  if (typeof options !== 'object') {
+    throw new TypeError('options must be an object');
+  }
+  var keys = Object.keys(options);
+  var i = keys.length;
+  while (i-- > 0) {
+    var opt = keys[i];
+    var validator = schema[opt];
+    if (validator) {
+      var value = options[opt];
+      var result = value === undefined || validator(value, opt, options);
+      if (result !== true) {
+        throw new TypeError('option ' + opt + ' must be ' + result);
+      }
+      continue;
+    }
+    if (allowUnknown !== true) {
+      throw Error('Unknown option ' + opt);
+    }
+  }
+}
+
+var validator$1 = {
+  isOlderVersion: isOlderVersion,
+  assertOptions: assertOptions,
+  validators: validators$1
+};
+
 var utils$4 = utils$h;
 var buildURL = buildURL$3;
 var InterceptorManager = InterceptorManager_1;
 var dispatchRequest = dispatchRequest$1;
 var mergeConfig$1 = mergeConfig$2;
+var validator = validator$1;
 
+var validators = validator.validators;
 /**
  * Create a new instance of Axios
  *
@@ -2367,20 +2586,71 @@ Axios$1.prototype.request = function request(config) {
     config.method = 'get';
   }
 
-  // Hook up interceptors middleware
-  var chain = [dispatchRequest, undefined];
-  var promise = Promise.resolve(config);
+  var transitional = config.transitional;
 
+  if (transitional !== undefined) {
+    validator.assertOptions(transitional, {
+      silentJSONParsing: validators.transitional(validators.boolean, '1.0.0'),
+      forcedJSONParsing: validators.transitional(validators.boolean, '1.0.0'),
+      clarifyTimeoutError: validators.transitional(validators.boolean, '1.0.0')
+    }, false);
+  }
+
+  // filter out skipped interceptors
+  var requestInterceptorChain = [];
+  var synchronousRequestInterceptors = true;
   this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
-    chain.unshift(interceptor.fulfilled, interceptor.rejected);
+    if (typeof interceptor.runWhen === 'function' && interceptor.runWhen(config) === false) {
+      return;
+    }
+
+    synchronousRequestInterceptors = synchronousRequestInterceptors && interceptor.synchronous;
+
+    requestInterceptorChain.unshift(interceptor.fulfilled, interceptor.rejected);
   });
 
+  var responseInterceptorChain = [];
   this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
-    chain.push(interceptor.fulfilled, interceptor.rejected);
+    responseInterceptorChain.push(interceptor.fulfilled, interceptor.rejected);
   });
 
-  while (chain.length) {
-    promise = promise.then(chain.shift(), chain.shift());
+  var promise;
+
+  if (!synchronousRequestInterceptors) {
+    var chain = [dispatchRequest, undefined];
+
+    Array.prototype.unshift.apply(chain, requestInterceptorChain);
+    chain = chain.concat(responseInterceptorChain);
+
+    promise = Promise.resolve(config);
+    while (chain.length) {
+      promise = promise.then(chain.shift(), chain.shift());
+    }
+
+    return promise;
+  }
+
+
+  var newConfig = config;
+  while (requestInterceptorChain.length) {
+    var onFulfilled = requestInterceptorChain.shift();
+    var onRejected = requestInterceptorChain.shift();
+    try {
+      newConfig = onFulfilled(newConfig);
+    } catch (error) {
+      onRejected(error);
+      break;
+    }
+  }
+
+  try {
+    promise = dispatchRequest(newConfig);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+
+  while (responseInterceptorChain.length) {
+    promise = promise.then(responseInterceptorChain.shift(), responseInterceptorChain.shift());
   }
 
   return promise;
@@ -2552,36 +2822,36 @@ function createInstance(defaultConfig) {
 }
 
 // Create the default instance to be exported
-var axios = createInstance(defaults$2);
+var axios$1 = createInstance(defaults$2);
 
 // Expose Axios class to allow class inheritance
-axios.Axios = Axios;
+axios$1.Axios = Axios;
 
 // Factory for creating new instances
-axios.create = function create(instanceConfig) {
-  return createInstance(mergeConfig(axios.defaults, instanceConfig));
+axios$1.create = function create(instanceConfig) {
+  return createInstance(mergeConfig(axios$1.defaults, instanceConfig));
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = Cancel_1;
-axios.CancelToken = CancelToken_1;
-axios.isCancel = isCancel$1;
+axios$1.Cancel = Cancel_1;
+axios$1.CancelToken = CancelToken_1;
+axios$1.isCancel = isCancel$1;
 
 // Expose all/spread
-axios.all = function all(promises) {
+axios$1.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = spread;
+axios$1.spread = spread;
 
 // Expose isAxiosError
-axios.isAxiosError = isAxiosError;
+axios$1.isAxiosError = isAxiosError;
 
-axios$1.exports = axios;
+axios$2.exports = axios$1;
 
 // Allow use of default import syntax in TypeScript
-axios$1.exports.default = axios;
+axios$2.exports.default = axios$1;
 
-var _axios_0_21_1_axios = axios$1.exports;
+var axios = axios$2.exports;
 
 function _defineProperty$8(obj, key, value) {
   if (key in obj) {
@@ -2884,7 +3154,7 @@ var getComponent = function getComponent(instance) {
   return com;
 };
 function isEmptyElement(c) {
-  return c.type === Comment || c.type === Fragment && c.children.length === 0 || c.type === Text && c.children.trim() === '';
+  return c && (c.type === Comment || c.type === Fragment && c.children.length === 0 || c.type === Text && c.children.trim() === '');
 }
 
 var BaseMixin = {
@@ -2950,7 +3220,7 @@ var getTransitionGroupProps = function getTransitionGroupProps(transitionName) {
   var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var transitionProps = transitionName ? _extends({
     appear: true,
-    appearFromClass: "".concat(transitionName, "-appear ").concat(transitionName, "-appear-prepare"),
+    // appearFromClass: `${transitionName}-appear ${transitionName}-appear-prepare`,
     appearActiveClass: "".concat(transitionName),
     appearToClass: "".concat(transitionName, "-appear ").concat(transitionName, "-appear-active"),
     enterFromClass: "".concat(transitionName, "-appear ").concat(transitionName, "-enter ").concat(transitionName, "-appear-prepare ").concat(transitionName, "-enter-prepare"),
@@ -5369,7 +5639,7 @@ var config$1 = config;
 
 // 全局配置
 // 创建 axios 实例
-const service = _axios_0_21_1_axios.create({
+const service = axios.create({
     baseURL: config$1.api,
     timeout: 10000 // request timeout
 });
@@ -5411,7 +5681,7 @@ service.interceptors.request.use((config) => {
     config.headers["Content-Type"] = "application/json;charset=UTF-8";
     config.headers["Accept"] = "application/json";
     //const token = storage.get("TOKEN") || null;
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ5amZjcm0iLCJpYXQiOjE2NDk0OTU0NjcsImV4cCI6MTY0OTUwMjY2NywibmJmIjoxNjQ5NDk1NDY3LCJzdWIiOiIiLCJqdGkiOiI2NDc5ODdjNDU5NjllMWU0NzEyOGMzOTc3NzNiMTM2MCIsImFjY291bnRfaWQiOjJ9.9W8xFdS8nyg-Ih0_4LclYoxno7uznRhZN5LTX_apr6Q';
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ5amZjcm0iLCJpYXQiOjE2NDk1OTIxMjIsImV4cCI6MTY0OTU5OTMyMiwibmJmIjoxNjQ5NTkyMTIyLCJzdWIiOiIiLCJqdGkiOiI1MTNjODYxOGMyMjEyYThkMjhiYjk5ODI4Y2E0Y2VlNiIsImFjY291bnRfaWQiOjJ9.FCzYcj5ZqBaZtnUQ-c6nSjddYU1aqA2xwsO9Ee23jsY';
     {
         // 如果token不为null，否则传token给后台
         config.headers["authorization"] = token;
@@ -5619,10 +5889,9 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_a_modal = resolveComponent("a-modal");
 
   return (openBlock(), createBlock(_component_a_modal, {
-    visible: _ctx.dialogTableVisible,
-    "onUpdate:visible": _cache[3] || (_cache[3] = $event => ((_ctx.dialogTableVisible) = $event)),
-    visibleModifiers: { sync: true },
-    title: "选择礼品",
+    modelValue: _ctx.dialogTableVisible,
+    "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => ((_ctx.dialogTableVisible) = $event)),
+    title: "选择礼P",
     width: "70%",
     onCancel: _ctx.closeDialog,
     footer: "null"
@@ -5643,8 +5912,8 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
             }, {
               default: withCtx(() => [
                 createVNode(_component_a_select, {
-                  value: _ctx.formState.typeName,
-                  "onUpdate:value": _cache[0] || (_cache[0] = $event => ((_ctx.formState.typeName) = $event)),
+                  modelValue: _ctx.formState.typeName,
+                  "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((_ctx.formState.typeName) = $event)),
                   style: {"width":"180px"},
                   allowClear: ""
                 }, {
@@ -5662,7 +5931,7 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
                     }), 128 /* KEYED_FRAGMENT */))
                   ]),
                   _: 1 /* STABLE */
-                }, 8 /* PROPS */, ["value"])
+                }, 8 /* PROPS */, ["modelValue"])
               ]),
               _: 1 /* STABLE */
             }),
@@ -5672,11 +5941,11 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
             }, {
               default: withCtx(() => [
                 createVNode(_component_a_input, {
-                  value: _ctx.formState.name,
-                  "onUpdate:value": _cache[1] || (_cache[1] = $event => ((_ctx.formState.name) = $event)),
+                  modelValue: _ctx.formState.name,
+                  "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ((_ctx.formState.name) = $event)),
                   maxlength: 15,
                   placeholder: "请输入礼品名称"
-                }, null, 8 /* PROPS */, ["value"])
+                }, null, 8 /* PROPS */, ["modelValue"])
               ]),
               _: 1 /* STABLE */
             }),
@@ -5744,7 +6013,7 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
       ])
     ]),
     _: 1 /* STABLE */
-  }, 8 /* PROPS */, ["visible", "onCancel"]))
+  }, 8 /* PROPS */, ["modelValue", "onCancel"]))
 }
 
 script$1.render = render$1;

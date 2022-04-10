@@ -63,11 +63,9 @@ declare const _default: import("vue").DefineComponent<Readonly<import("vue").Com
     handleSelectGift: (e: any, row: any) => void;
     requireGiftTypeList: () => void;
     reuiqreGiftList: any;
-}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("handChoice" | "closeDialog")[], "handChoice" | "closeDialog", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<readonly string[] | ({
+}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("handChoice" | "closeDialog")[], "handChoice" | "closeDialog", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<readonly string[] | import("vue").ExtractPropTypes<Readonly<import("vue").ComponentObjectPropsOptions<{
     [x: string]: unknown;
-} & {} & {
-    [x: string]: import("vue").Prop<unknown, unknown> | null | undefined;
-})> & {
+}>>>> & {
     onHandChoice?: ((...args: any[]) => any) | undefined;
     onCloseDialog?: ((...args: any[]) => any) | undefined;
 }, {
