@@ -27,6 +27,6 @@ jobs:
        with:
          node-version: 14
          registry-url: https://registry.npmjs.com/
-     - run: npm publish --access public
+     - run: npm publish 
        env:
          NODE_AUTH_TOKEN: ${{secrets.componentCom_publish}}
