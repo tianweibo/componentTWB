@@ -1,7 +1,7 @@
 <template>
   <a-modal
     v-model="dialogTableVisible"
-    title="选择礼1"
+    title="选择礼12"
     width="70%"
     @cancel="closeDialog"
     footer=null

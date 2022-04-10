@@ -5,7 +5,7 @@ on:
    branches:
      - master
    paths:
-     - 'dist/**'
+     - 'src/**'
 
 jobs:
  #build:
