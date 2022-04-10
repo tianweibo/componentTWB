@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1>我是图片组件2</h1>
+    <h1>我是图片组件2-test</h1>
   </div>
 </template>
 
